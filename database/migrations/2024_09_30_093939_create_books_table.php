@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('author');
-            $table->text('description')->nullable();
+            $table->text('published_year')->nullable();
+            $table->string(column: 'code')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
