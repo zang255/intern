@@ -19,4 +19,14 @@ class Book extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public static function search($query)
+    {
+        return self::where('title', 'like', '%' . $query . '%')
+               ->orWhere('author', 'like', '%' . $query . '%')
+               ->orWhere('published_year', 'like', '%' . $query . '%')
+               ->orWhere('code', 'like', '%' . $query . '%')
+               ->orWhere('user_id', 'like', '%' . $query . '%')
+            //    ->orderBy('title', 'asc')  // Sắp xếp theo 'title'
+               ->paginate(10);
+    }
 }

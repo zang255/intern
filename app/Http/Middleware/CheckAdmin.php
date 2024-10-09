@@ -7,7 +7,7 @@ class CheckAdmin
     public function handle($request, Closure $next)
     {
         $user = Auth::user();
-        if ($user->role !== 'admin') {
+        if ($user->role_id !== 1) {
             return response()->json([
                 'success' => false,
                 'message' => 'Bạn không có quyền truy cập.'

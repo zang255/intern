@@ -30,6 +30,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
     $router->group(['middleware' => ['auth','checkAdmin']], function () use ($router) {
         $router->get('books', 'BookController@index');
+        $router->get('/books/search', 'BookController@search');
         $router->get('books/{id}', 'BookController@show');
         $router->post('books', [
             'middleware' => 'checkValidate',

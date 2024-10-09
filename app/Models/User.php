@@ -49,4 +49,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Book::class);
     }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'roles');
+    }
+    public static function search($query)
+    {
+        return self::where('name', 'like', '%' . $query . '%')
+                    ->orWhere('email', 'like', '%' . $query . '%')
+                    ->get();
+    }
 }

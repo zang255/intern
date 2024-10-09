@@ -8,14 +8,22 @@ namespace App\Http\Controllers;
 // use Illuminate\Support\Facades\DB;
 use App\Http\Resources\BookResource;
 use App\Models\Book;
+use App\Models\User;
+use App\Repositories\BookRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
+    protected $bookRepository; 
+    public function __construct(BookRepository $bookRepository)
+    {
+        $this->bookRepository = $bookRepository; 
+    }
     public function index()
     {
+        $books = $this->bookRepository->all();
         return response()->json([
             'success' => true,
             'message' => 'Lấy danh sách book thành công.',
@@ -25,6 +33,7 @@ class BookController extends Controller
 
     public function show($id)
     {
+        $book = $this->bookRepository->find($id);
         return response()->json([
             'success' => true,
             'message' => 'Lấy chi tiết book thành công.',
@@ -63,6 +72,7 @@ class BookController extends Controller
     public function update(Request $request, $id)
     {
         try {
+            $book = $this->bookRepository->find($id);
             return response()->json([
                 'success' => true,
                 'message' => 'Cập nhật book thành công.',
@@ -110,4 +120,15 @@ class BookController extends Controller
             ], 500);
         }
     }
+    public function search(Request $request)
+{
+     
+     $query = $request->input('query');
+        
+     // Gọi phương thức search trong model Book
+     $books = Book::search($query);
+
+     // Trả về kết quả dưới dạng JSON hoặc view
+     return response()->json($books);
+}
 }
