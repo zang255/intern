@@ -20,7 +20,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var string[]
      */
     protected $fillable = [
-        'name', 'email',
+        'name',
+        'email',
     ];
 
     /**
@@ -49,14 +50,24 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->hasMany(Book::class);
     }
-    public function roles()
+    protected $with = ['role', 'role.permissions'];
+    // Một người dùng thuộc về một vai trò
+    public function role()
     {
-        return $this->belongsToMany(Role::class, 'roles');
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+    // Lấy các quyền của người dùng thông qua vai trò
+    public function permissions()
+    {
+        if ($this->role) {
+            return $this->role->permissions();
+        }
+        return collect(); // Trả về một collection rỗng nếu user không có vai trò
     }
     public static function search($query)
     {
         return self::where('name', 'like', '%' . $query . '%')
-                    ->orWhere('email', 'like', '%' . $query . '%')
-                    ->get();
+            ->orWhere('email', 'like', '%' . $query . '%')
+            ->get();
     }
 }

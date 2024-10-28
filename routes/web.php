@@ -27,17 +27,37 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('login', 'AuthController@login');
+    // $router->post('refresh', 'AuthController@refresh');
+    $router->group(['middleware' => ['auth']], function () use ($router) {
 
-    $router->group(['middleware' => ['auth','checkAdmin']], function () use ($router) {
-        $router->get('books', 'BookController@index');
-        $router->get('/books/search', 'BookController@search');
-        $router->get('books/{id}', 'BookController@show');
-        $router->post('books', [
-            'middleware' => 'checkValidate',
-            'uses' => 'BookController@store'
+        $router->get('books', [
+            'middleware' => 'permission:index',
+            'uses' => 'BookController@index',
+
         ]);
-        $router->put('books/{id}', 'BookController@update');
-        $router->delete('books/{id}', 'BookController@destroy');
+        $router->get('books/{id}', [
+            'middleware' => ['permission:show'],
+            'uses' => 'BookController@show',
+
+        ]);
+        $router->post('books', [
+            // 'middleware' => ['validation', 'permission:create'],
+            'middleware' => 'checkValidate',
+            
+            'uses' => 'BookController@store',
+
+        ]);
+        // $router->post('books', 'BookController@store');
+        $router->put('books/{id}', [
+            'middleware' => ['permission:update'],
+            'uses' => 'BookController@update',
+
+        ]);
+        $router->delete('books/{id}', [
+            'middleware' => ['permission:delete'],
+            'uses' => 'BookController@destroy',
+
+        ]);
         $router->get('get-trash', 'BookController@getDeletedBooks');
         $router->post('logout', 'AuthController@logout');
         $router->post('me', 'AuthController@me');

@@ -9,20 +9,18 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->softDeletes(); // Thêm cột deleted_at
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Thêm cột user_id và thiết lập khóa ngoại
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->dropSoftDeletes(); // Xóa cột deleted_at nếu rollback
+            $table->dropForeign(['user_id']); // Xóa khóa ngoại nếu rollback
+            $table->dropColumn('user_id'); // Xóa cột user_id
         });
     }
 };

@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('name');
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id(); // Tự động tạo cột id
+            $table->string('name')->unique(); // Tên vai trò (admin, user, etc.)
+            $table->string('description')->nullable(); // Mô tả vai trò
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(columns: 'name'); // Xóa cột name nếu rollback
-        });
+        Schema::dropIfExists('roles');
     }
 };

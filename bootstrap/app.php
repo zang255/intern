@@ -114,12 +114,14 @@ $app->routeMiddleware([
     'auth' => Tymon\JWTAuth\Http\Middleware\Authenticate::class,
     'checkAdmin' => App\Http\Middleware\CheckAdmin::class,
     'checkValidate' => App\Http\Middleware\Validate::class,
+    'permission' => \App\Http\Middleware\CheckPermission::class,
 ]);
 
 $app->configure('jwt');
 
 $app->register(Illuminate\Cache\CacheServiceProvider::class);
 $app->register(App\Providers\AppServiceProvider::class);
+
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
